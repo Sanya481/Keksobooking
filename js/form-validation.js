@@ -40,6 +40,16 @@ const roomNumber = document.querySelector('#room_number');
  */
 const capacity = document.querySelector('#capacity');
 
+/**
+ * Поле «Время заезда»
+ */
+const checkInTime = document.querySelector('#timein');
+
+/**
+ * Поле «Время выезда»
+ */
+const checkOutTime = document.querySelector('#timeout');
+
 // Максимальная цена за ночь
 const PRICE_MAX_FOR_NIGHT = 100000;
 
@@ -187,6 +197,24 @@ const getRoomNumberErrorMessage = () => {
   }
 };
 
+/**
+ * При изменении времени заезда, меняется время выезда
+ */
+const onTimeinChange = () => {
+  if (checkInTime.value !== checkOutTime.value) {
+    checkOutTime.value = checkInTime.value;
+  }
+};
+
+/**
+ * При изменении времени выезда, меняется время заезда
+ */
+const onTimeOutChange = () => {
+  if (checkInTime.value !== checkOutTime.value) {
+    checkInTime.value = checkOutTime.value;
+  }
+};
+
 // Реализовал с помощью атрибутов в HTML
 // pristine.addValidator(titleField, validateNickname, 'От 10 до 100');
 
@@ -204,15 +232,20 @@ housingType.addEventListener('change', onChangePriceForHousingType);
 // Обработчик изменения выбора количества гостей, чтобы последовывательность изменений не была важна
 capacity.addEventListener('change', onCapacityChange);
 
+// Изменение времени заезда
+checkInTime.addEventListener('change', onTimeinChange);
+// Изменение времени выезда
+checkOutTime.addEventListener('change', onTimeOutChange);
+
 formPlacingAd.addEventListener('submit', (evt) => {
   evt.preventDefault();
 
   const isValid = pristine.validate();
 
   if (isValid) {
-    console.log('Можно отправлять');
+    // console.log('Можно отправлять');
   } else {
-    console.log('Форма невалидна');
+    // console.log('Форма невалидна');
   }
 
 });
