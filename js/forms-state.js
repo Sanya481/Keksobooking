@@ -9,7 +9,6 @@ const mapFilterForm = document.querySelector('.map__filters');
 // const mapFilterFormSelect = mapFilterForm.querySelectorAll('select');
 // const mapFilterFormFieldset = mapFilterForm.querySelectorAll('fieldset');
 
-
 //  ======================= Вариант 1
 
 // /**
@@ -74,7 +73,8 @@ const mapFilterForm = document.querySelector('.map__filters');
  */
 const inactiveState = (form) => {
   form.classList.add('ad-form--disabled');
-  form.children.forEach((element) => element.setAttribute('disabled', ''));
+  const formElements = Array.from(form.children);
+  formElements.forEach((element) => element.setAttribute('disabled', ''));
 };
 
 /**
@@ -83,7 +83,8 @@ const inactiveState = (form) => {
  */
 const activeState = (form) => {
   form.classList.remove('ad-form--disabled');
-  form.children.forEach((element) => element.removeAttribute('disabled', ''));
+  const formElements = Array.from(form.children);
+  formElements.forEach((element) => element.removeAttribute('disabled', ''));
 };
 
 /**

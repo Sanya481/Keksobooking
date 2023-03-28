@@ -346,6 +346,7 @@ fieldset {
 }
 
 .ad-form__element {
+  position: relative;
   -ms-flex-preferred-size: 25%;
       flex-basis: 25%;
   min-height: 90px;
@@ -405,6 +406,31 @@ fieldset {
 
 .ad-form__element--time select:first-of-type {
   margin-right: 14px;
+}
+
+.ad-form__slider.noUi-target:not(#fake-id) {
+  width: calc(100% - 20px);
+  height: 5px;
+  transform: translateY(-2px);
+}
+
+.ad-form__slider:not(#fake-id) .noUi-connect {
+  background-color: #353535;
+}
+
+.ad-form__slider:not(#fake-id) .noUi-handle {
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  right: -5px;
+  top: -5px;
+  cursor: grab;
+  background-color: #999999;
+}
+
+.ad-form__slider:not(#fake-id) .noUi-handle::after,
+.ad-form__slider:not(#fake-id) .noUi-handle::before {
+  display: none;
 }
 
 .features legend {
@@ -581,6 +607,12 @@ fieldset {
 
   background-color: #e4e4de;
   border-radius: 5px;
+}
+
+.ad-form__photo img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
 }
 
 .ad-form__element--submit {
@@ -1027,4 +1059,48 @@ fieldset {
 
 .hidden {
   display: none;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.ad-form__error-text {
+  position: absolute;
+  margin-right: 5px;
+  padding: 5px;
+  background-color: #ffffff;
+  color: tomato;
+  border: 1px solid #7e7e7e;
+  border-radius: 5px;
+  z-index: 1;
+}
+
+.ad-form__slider {
+  margin: 30px 0;
+}
+
+.ad-form__slider + .ad-form__error-text {
+  left: 0;
+  bottom: -5px;
+  width: max-content;
+}
+
+.noUi-tooltip {
+  display: none;
+}
+.noUi-active .noUi-tooltip {
+  display: block;
+}
+
+.error-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  padding: 10px 3px;
+  font-size: 30px;
+  text-align: center;
+  background-color: red;
+  z-index: 100;
 }
