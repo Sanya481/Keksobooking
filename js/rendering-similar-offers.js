@@ -103,81 +103,93 @@ const checkExistData = (card, dataAdvert, selector) => {
 
 
 /**
- * @description Генерация разметки похожих объявлений на основе исходных данных
- * @param {Array} userOffers - массив с исходными данными
+ * @description Генерация разметки похожего объявления на основе исходных данных
+ * @param {Object} advert - обьект с данными (одно обьявление)
+ * @returns {HTMLElement} - html разметка обьявления (article)
  */
-const renderSimilarOffers = (userOffers) => {
+const renderSimilarOffers = (advert) => {
 
   // Блок для вставки
-  const mapCanvas = document.querySelector('#map-canvas');
+  // const mapCanvas = document.querySelector('#map-canvas');
 
   // Шаблон карточки обьявления
   const cardTemplate = document.querySelector('#card')
     .content.querySelector('.popup');
 
   // Пустой фрагмент для складирования данных
-  const documentFragment = document.createDocumentFragment();
+  // const documentFragment = document.createDocumentFragment();
+
+  // const offerCard = cardTemplate.cloneNode(true);
 
   // advert - обьявление
-  userOffers.forEach((advert) => {
+  // userOffers.forEach((advert) => {
 
-    // Карточка товара
-    const offerCard = cardTemplate.cloneNode(true);
+  // Карточка товара
+  const offerCard = cardTemplate.cloneNode(true);
+
+  // Название обьявления
+  checkExistData(offerCard, advert.offer.title, '.popup__title');
+
+  // Адрес жилья
+  checkExistData(offerCard, advert.offer.address, '.popup__text.popup__text--address');
+
+  // Аватарка пользователя
+  const popupAvatar = offerCard.querySelector('.popup__avatar');
+  if (advert.author.avatar) {
+    popupAvatar.src = advert.author.avatar;
+  } else {
+    popupAvatar.remove();
+  }
+
+  checkExistData(offerCard, advert.author.avatar, '.popup__avatar');
+
+  // Описание жилья
+  checkExistData(offerCard, advert.offer.description, '.popup__description');
+
+  // Тип жилья
+  checkExistData(offerCard, TYPES_OF_HOUSING[advert.offer.type], '.popup__type');
 
 
-    // Название обьявления
-    checkExistData(offerCard, advert.offer.title, '.popup__title');
+  // Цена на жильё
+  const offerPrice = offerCard.querySelector('.popup__text.popup__text--price');
+  if (advert.offer.price) {
+    offerPrice.textContent = `${advert.offer.price} ₽/ночь`;
+  } else {
+    offerPrice.remove();
+  }
 
-    // Адрес жилья
-    checkExistData(offerCard, advert.offer.address, '.popup__text.popup__text--address');
+  // capacity - вместимость
+  const offerCapacity = offerCard.querySelector('.popup__text.popup__text--capacity');
+  if (advert.offer.rooms && advert.offer.guests) {
+    offerCapacity.textContent = `${advert.offer.rooms} комнаты для ${advert.offer.guests} гостей`;
+  } else {
+    offerCapacity.remove();
+  }
 
-    // Аватарка пользователя
-    checkExistData(offerCard, advert.author.avatar, '.popup__avatar');
+  // Время заезда/выезда
+  const offerTime = offerCard.querySelector('.popup__text.popup__text--time');
+  if (advert.offer.checkin && advert.offer.checkout) {
+    offerTime.textContent = `Заезд после ${advert.offer.checkin}, выезд до ${advert.offer.checkout}`;
+  } else {
+    offerTime.remove();
+  }
 
-    // Описание жилья
-    checkExistData(offerCard, advert.offer.description, '.popup__description');
+  // Добавление фотографий
+  createPhotos(offerCard, advert.offer.photos);
 
-    // Тип жилья
-    checkExistData(offerCard, TYPES_OF_HOUSING[advert.offer.type], '.popup__type');
+  // Добавление преимуществ
+  addFeatureType(offerCard, advert.offer.features);
 
+  // Положили карточки в фрагмент
+  // documentFragment.append(offerCard);
 
-    // Цена на жильё
-    const offerPrice = offerCard.querySelector('.popup__text.popup__text--price');
-    if (advert.offer.price) {
-      offerPrice.textContent = `${advert.offer.price} ₽/ночь`;
-    } else {
-      offerPrice.remove();
-    }
+  // });
 
-    // capacity - вместимость
-    const offerCapacity = offerCard.querySelector('.popup__text.popup__text--capacity');
-    if (advert.offer.rooms && advert.offer.guests) {
-      offerCapacity.textContent = `${advert.offer.rooms} комнаты для ${advert.offer.guests} гостей`;
-    } else {
-      offerCapacity.remove();
-    }
-
-    // Время заезда/выезда
-    const offerTime = offerCard.querySelector('.popup__text.popup__text--time');
-    if (advert.offer.checkin && advert.offer.checkout) {
-      offerTime.textContent = `Заезд после ${advert.offer.checkin}, выезд до ${advert.offer.checkout}`;
-    } else {
-      offerTime.remove();
-    }
-
-    // Добавление фотографий
-    createPhotos(offerCard, advert.offer.photos);
-
-    // Добавление преимуществ
-    addFeatureType(offerCard, advert.offer.features);
-
-    // Положили карточки в фрагмент
-    documentFragment.append(offerCard);
-  });
+  return offerCard;
 
   // Отрисовали на странице
-  mapCanvas.append(documentFragment);
+  // mapCanvas.append(documentFragment);
 
 };
 
-export {renderSimilarOffers};
+export { renderSimilarOffers };

@@ -16,12 +16,12 @@ const GUESTS_MIN_COUNT = 1;
 const GUESTS_MAX_COUNT = 20;
 
 // Местоположение в виде географических координат - широта
-const ADRESS_MIN_LATITUDE = 35.65;
+const ADRESS_MIN_LATITUDE = 35.6;
 const ADRESS_MAX_LATITUDE = 35.7;
 
 // Местоположение в виде географических координат - долгота
-const ADDRESS_MIN_LONGITUDE = 139.7;
-const ADDRESS_MAX_LONGITUDE = 139.8;
+const ADDRESS_MIN_LONGITUDE = 138.65;
+const ADDRESS_MAX_LONGITUDE = 139.79;
 
 // Количество знаков после плавающей точки у числа
 const DECIMAL_PLACES_COUNT = 5;
@@ -114,8 +114,8 @@ const makeSimilarOffer = () => ({
   author: { avatar: createAvatarIndex() },
   offer: makeOffer(),
   location: {
-    lat: LOCATION.LAT,
-    lng: LOCATION.LNG,
+    lat: getRandomInclusiveNumber(ADRESS_MIN_LATITUDE, ADRESS_MAX_LATITUDE, DECIMAL_PLACES_COUNT),
+    lng: getRandomInclusiveNumber(ADDRESS_MIN_LONGITUDE, ADDRESS_MAX_LONGITUDE, DECIMAL_PLACES_COUNT),
   },
 });
 

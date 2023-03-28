@@ -247,7 +247,6 @@ formPlacingAd.addEventListener('submit', (evt) => {
   } else {
     // console.log('Форма невалидна');
   }
-
 });
 
 
