@@ -15,7 +15,7 @@ const coordinatesField = document.querySelector('#address');
 /**
  * Кнопка - очистить форму
  */
-const adFormReset = document.querySelector('.ad-form__reset');
+// const adFormReset = document.querySelector('.ad-form__reset');
 
 // Координаты центра Токио
 const COORDINATES_CENTER_TOKYO = {
@@ -128,26 +128,57 @@ similarOffers.forEach((advert) => {
   createMarkers(advert);
 });
 
+/**
+ * @description Закрытие описания балуна (при очистке и отправке формы), если оно открыто
+ */
+const closeBalloon = () => {
+  const baloonContainer = document.querySelector('.leaflet-pane.leaflet-popup-pane');
+
+  const openBaloons = Array.from(baloonContainer.children);
+
+  // Такое условие тоже сработает
+  // if (openBaloons.length) {
+  if (openBaloons.length !== 0) {
+    openBaloons.forEach((baloon) => {
+      baloon.remove();
+    });
+  }
+};
 
 /**
  * @description Возврат карты/основной метки в начальное состояние
  */
-const onResetData = () => {
-
+const resetMapData = () => {
   // Возвращаем метку на первоночальное место
   mainPinMarker.setLatLng({
     lat: COORDINATES_CENTER_TOKYO.lat,
     lng: COORDINATES_CENTER_TOKYO.lng,
   });
 
-  coordinatesField.value = `${COORDINATES_CENTER_TOKYO.lat}, ${COORDINATES_CENTER_TOKYO.lng}`;
+  // coordinatesField.value = `${COORDINATES_CENTER_TOKYO.lat}, ${COORDINATES_CENTER_TOKYO.lng}`;
+  coordinatesField.defaultValue = `${COORDINATES_CENTER_TOKYO.lat}, ${COORDINATES_CENTER_TOKYO.lng}`;
+  // console.log(`${COORDINATES_CENTER_TOKYO.lat}, ${COORDINATES_CENTER_TOKYO.lng}`)
+  // console.log(coordinatesField.value)
 
   // Возвращаем карту на первоночальное место
   map.setView({
     lat: COORDINATES_CENTER_TOKYO.lat,
     lng: COORDINATES_CENTER_TOKYO.lng,
   }, MAP_ZOOM);
+
+  closeBalloon();
 };
 
+
+/**
+ * Форма для добавления обьявления
+ */
+// const formPlacingAd = document.querySelector('.ad-form');
+
+// formPlacingAd.addEventListener('reset', onResetData);
+
+
 // Добавление обработчика на кнопку reset у формы
-adFormReset.addEventListener('click', onResetData);
+// adFormReset.addEventListener('click', onResetData);
+
+export { resetMapData, closeBalloon };

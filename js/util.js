@@ -6,6 +6,13 @@
 const isNumber = (value) => typeof value === 'number';
 
 /**
+ * @description Функиця проверяет, нажали ли на клавишу Escape
+ * @param {string} key - код клавиши Escape
+ * @returns {boolean}
+ */
+const isEscKeyPress = (key) => key === 'Escape';
+
+/**
  * @description Получаем случайное целое число из диапазона
  * @param {number} min - минимальное значение
  * @param {number} max - максимальное значение
@@ -104,4 +111,4 @@ const getRandomArrayPart = (array) => {
  */
 const leadingZero = (number) => String(number).padStart(2, 0);
 
-export { getRandomInclusiveInt, getRandomInclusiveNumber, getRandomArrayElement, getRandomArrayElements, getRandomArrayPart, leadingZero };
+export { getRandomInclusiveInt, isEscKeyPress, getRandomInclusiveNumber, getRandomArrayElement, getRandomArrayElements, getRandomArrayPart, leadingZero };

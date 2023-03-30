@@ -1,3 +1,8 @@
+import { showSuccessMessage } from './ad-form-message.js';
+import { resetMapData, closeBalloon } from './map.js';
+import { resetSliderPrice } from './price-slider.js';
+import { showErrorMessage } from './ad-form-error-message.js';
+
 // https://morioh.com/p/7c5a96c13053 - подсказки ниже взял с этого сайта
 
 /* !При добавлении библиотеки Pristine, к форме, которую мы собираемся валидировать, добавляется атрибут novalidate со значением true; это отключит проверку HTML формы по умолчанию */
@@ -50,6 +55,11 @@ const checkInTime = document.querySelector('#timein');
  */
 const checkOutTime = document.querySelector('#timeout');
 
+/**
+ * кнопка «Опубликовать»
+ */
+// const adFormSubmit = document.querySelector('.ad-form__submit');
+
 // Максимальная цена за ночь
 const PRICE_MAX_FOR_NIGHT = 100000;
 
@@ -69,6 +79,15 @@ const RATIO_OF_ROOMS_AND_GUESTS = {
   '2': ['1', '2'],
   '3': ['1', '2', '3'],
   '100': ['0'],
+};
+
+
+/**
+ * @description Возврат карты/основной метки в начальное состояние
+ */
+const onResetData = (evt) => {
+  resetMapData();
+  resetSliderPrice();
 };
 
 /* Для вывода сообщения, нужно добавить дополнительную разметку для показа сообщения об ошибке в HTML документ */
@@ -237,16 +256,40 @@ checkInTime.addEventListener('change', onTimeinChange);
 // Изменение времени выезда
 checkOutTime.addEventListener('change', onTimeOutChange);
 
+// Обработчки на событие submit
 formPlacingAd.addEventListener('submit', (evt) => {
   evt.preventDefault();
 
   const isValid = pristine.validate();
 
   if (isValid) {
-    // console.log('Можно отправлять');
+
+    // На время выполнения запроса к серверу кнопка «Опубликовать» блокируется
+    // adFormSubmit.disabled = true;
+
+    // Если отправка данных прошла успешно, показывается соответствующее сообщение
+    showSuccessMessage();
+
+    // Для очистки полей формы достаточно дописать в обработчик событий submit этот метод
+    evt.target.reset();
+
+    // Возврат карты/основной метки в начальное состояние
+    resetMapData();
+
+    // Закрытие описания балуна (при очистке и отправке формы), если оно открыто
+    closeBalloon();
+
+    // Сброс цены к значениям по умолчанию
+    resetSliderPrice();
   } else {
-    // console.log('Форма невалидна');
+
+    showErrorMessage();
+    console.log('Форма невалидна');
   }
 });
+
+// Обработчки на событие reset
+formPlacingAd.addEventListener('reset', onResetData);
+
 
 
