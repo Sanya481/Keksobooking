@@ -1,5 +1,5 @@
-import { setInactiveStateForm, setActiveStateForm, setInactiveStateFilter, setActiveStateFilter } from './forms-state.js';
-import { similarOffers } from './generate-offers.js';
+import { setActiveStateForm, setActiveStateFilter } from './forms-state.js';
+// import { similarOffers } from './generate-offers.js';
 import { renderSimilarOffers } from './rendering-similar-offers.js';
 
 /**
@@ -27,13 +27,13 @@ const COORDINATES_CENTER_TOKYO = {
 const MAP_ZOOM = 9;
 
 const map = L.map(mapCanvas)
-  .on('load', (evt) => {
+  .on('load', () => {
 
     setActiveStateForm();
     setActiveStateFilter();
 
     coordinatesField.value = `${COORDINATES_CENTER_TOKYO.lat}, ${COORDINATES_CENTER_TOKYO.lng}`;
-    console.log(evt.target._loaded)
+    // console.log(evt.target._loaded)
   })
   .setView({
     lat: COORDINATES_CENTER_TOKYO.lat,
@@ -124,9 +124,9 @@ const createMarkers = (advertisement) => {
 };
 
 // advert - одно обьявление
-similarOffers.forEach((advert) => {
-  createMarkers(advert);
-});
+// similarOffers.forEach((advert) => {
+//   createMarkers(advert);
+// });
 
 /**
  * @description Закрытие описания балуна (при очистке и отправке формы), если оно открыто
@@ -181,4 +181,4 @@ const resetMapData = () => {
 // Добавление обработчика на кнопку reset у формы
 // adFormReset.addEventListener('click', onResetData);
 
-export { resetMapData, closeBalloon };
+export { resetMapData, closeBalloon , createMarkers};

@@ -1,18 +1,25 @@
-import { similarOffers } from './generate-offers.js';
+// import { similarOffers } from './generate-offers.js';
 // import { renderSimilarOffers } from './rendering-similar-offers.js';
 import './form-validation.js';
 import './map.js';
 import './price-slider.js';
 import './ad-form-message.js';
 import './ad-form-error-message.js';
+import './server-api.js';
+import { getDataFromServer } from './server-api.js';
+import { createMarkers } from './map.js';
+import { setUserFormSubmit, clearForm } from './form-validation.js';
+
+
+getDataFromServer(createMarkers);
+
+setUserFormSubmit(clearForm);
 
 // import { isEscKeyPress } from './util.js';
 
 // const body = document.body;
 
 // const showMessage = (typeMessage) => {
-
-
 
 //   /**
 //   * Шаблон сообщения об успешной отправке формы
@@ -66,12 +73,6 @@ import './ad-form-error-message.js';
 //   document.addEventListener('click', onClickOverlay);
 // };
 
-// export { showMessage };
-
-
-
-
-
+// expor { showMessage };
 // renderSimilarOffers(similarOffers);
 // console.log(similarOffers)
-
