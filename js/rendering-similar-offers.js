@@ -41,25 +41,35 @@ const TYPES_OF_HOUSING = {
  * @param {Array} photos - фотографии жилья
  */
 const createPhotos = (element, photos) => {
+  // Блок с фотками
   const popupPhotosList = element.querySelector('.popup__photos');
+  // Используем единственнный элемент в шаблоне, как пример изображения
   const popupPhoto = popupPhotosList.querySelector('.popup__photo');
 
-  if (photos.length === 0) {
+  // Если ВООБЩЕ нет фоток в обьявлении - очищаем блок с фотками
+  if (!photos) {
     popupPhotosList.innerHTML = '';
 
+    // Если есть фотка, но только одна - берём её src
   } else if (photos.length === 1) {
     popupPhoto.src = photos[0];
 
     // offer.offer.photos.length > 1
   } else {
+    // Массив с фотками
     const offerPhotos = photos;
 
+    // Очистили блок для фоток
     popupPhotosList.innerHTML = '';
 
+    // Проходимся по массиву
     offerPhotos.forEach((photo) => {
+      // Склонировали шаблон
       const popupPhotoTemplate = popupPhoto.cloneNode();
+      // Добавили адрес для каждой фотки
       popupPhotoTemplate.src = photo;
 
+      // Добавили в блок фоток сами фотки
       popupPhotosList.append(popupPhotoTemplate);
     });
   }
@@ -71,18 +81,26 @@ const createPhotos = (element, photos) => {
  * @param {Array} features - преимущества жилья
  */
 const addFeatureType = (element, features) => {
+  // Список преимуществ
   const offerFeaturesList = element.querySelector('.popup__features');
+  // Все преимущества
   const offerFeatureItems = offerFeaturesList.querySelectorAll('.popup__feature');
 
-  offerFeatureItems.forEach((featureItem) => {
-    const isFeatureExist = features.some((feature) =>
-      featureItem.classList.contains(`popup__feature--${feature}`)
-    );
+  // Если преимущества ВООБЩЕ есть то...
+  if (features) {
+    // В списке преимуществ у шаблона ищем нужные нам преимущества
+    // Метод массива some() позволяет узнать, есть ли в массиве хотя бы один элемент, удовлетворяющий условию в функции-колбэке
+    offerFeatureItems.forEach((featureItem) => {
+      const isFeatureExist = features.some((feature) =>
+        featureItem.classList.contains(`popup__feature--${feature}`)
+      );
 
-    if (!isFeatureExist) {
-      featureItem.remove();
-    }
-  });
+      // Если ни одно преимущество не найдено - удаляем список
+      if (!isFeatureExist) {
+        featureItem.remove();
+      }
+    });
+  }
 };
 
 /**

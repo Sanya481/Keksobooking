@@ -1,9 +1,21 @@
 /**
+ * @description Время показа плашки сообщения об ошибке
+ */
+const ALERT_SHOW_TIME = 5000;
+
+/**
  * @description Функиця проверяет, что пришло именно число, а не что-то иное
  * @param {*} value - значение
  * @returns {boolean}
  */
 const isNumber = (value) => typeof value === 'number';
+
+/**
+ * @description Функиця проверяет, нажали ли на клавишу Escape
+ * @param {string} key - код клавиши Escape
+ * @returns {boolean}
+ */
+const isEscKeyPress = (key) => key === 'Escape';
 
 /**
  * @description Получаем случайное целое число из диапазона
@@ -104,4 +116,29 @@ const getRandomArrayPart = (array) => {
  */
 const leadingZero = (number) => String(number).padStart(2, 0);
 
-export { getRandomInclusiveInt, getRandomInclusiveNumber, getRandomArrayElement, getRandomArrayElements, getRandomArrayPart, leadingZero };
+/**
+ * @description Функция создания сообщения, что при загрузке данных с сервера произошла ошибка запроса
+ * @param {string} message
+ */
+const showAlertMessage = (message) => {
+  const alertContainer = document.createElement('div');
+  alertContainer.style.zIndex = 100;
+  alertContainer.style.position = 'fixed';
+  alertContainer.style.left = 0;
+  alertContainer.style.top = 0;
+  alertContainer.style.right = 0;
+  alertContainer.style.padding = '10px 3px';
+  alertContainer.style.fontSize = '30px';
+  alertContainer.style.textAlign = 'center';
+  alertContainer.style.backgroundColor = 'red';
+
+  alertContainer.textContent = message;
+
+  document.body.append(alertContainer);
+
+  setTimeout(() => {
+    alertContainer.remove();
+  }, ALERT_SHOW_TIME);
+};
+
+export { getRandomInclusiveInt, isEscKeyPress, getRandomInclusiveNumber, getRandomArrayElement, getRandomArrayElements, getRandomArrayPart, leadingZero, showAlertMessage };

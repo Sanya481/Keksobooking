@@ -37,6 +37,19 @@ noUiSlider.create(adFormPriceSlider, {
   }
 });
 
+/**
+ * @description Сброс установленных пользователем значений цены к цене по умолчанию
+ */
+const resetSliderPrice = () => {
+  adFormPriceSlider.noUiSlider.updateOptions({
+    range: {
+      'min': 0,
+      'max': 100000
+    },
+    start: 0,
+  });
+};
+
 // Изменение цены при помощи ползунка
 adFormPriceSlider.noUiSlider.on('update', () => {
   // Получим актуальное значение слайдера с помощью метода .get() и запишем его в свойство value поля ввода.
@@ -109,4 +122,4 @@ priceField.addEventListener('change', (evt) => {
 //   chooseHousingType(evt.target.value);
 // });
 
-
+export { resetSliderPrice };
