@@ -1,9 +1,8 @@
-import { showSuccessMessage } from './ad-form-message.js';
 import { resetMapData, closeBalloon } from './map.js';
 import { resetSliderPrice } from './price-slider.js';
-import { showErrorMessage } from './ad-form-error-message.js';
 import { showAlertMessage } from './util.js';
 import { sendDataToServer } from './server-api.js';
+import { cleanImagesAdvertForm } from './add-photo-to-form.js';
 
 // https://morioh.com/p/7c5a96c13053 - подсказки ниже взял с этого сайта
 
@@ -90,6 +89,9 @@ const RATIO_OF_ROOMS_AND_GUESTS = {
 const onResetData = () => {
   resetMapData();
   resetSliderPrice();
+
+  // Удаление изображений с формы
+  cleanImagesAdvertForm();
 };
 
 /**
@@ -112,9 +114,6 @@ const unblockSubmitBtn = () => {
  * @description Очистка формы (удаление данных введенных пользователем )
  */
 const clearForm = () => {
-  // Если отправка данных прошла успешно, показывается соответствующее сообщение
-  showSuccessMessage();
-
   // Для очистки полей формы достаточно дописать в обработчик событий submit этот метод
   formPlacingAd.reset();
 
@@ -126,6 +125,9 @@ const clearForm = () => {
 
   // Сброс цены к значениям по умолчанию
   resetSliderPrice();
+
+  // Удаление изображений с формы
+  cleanImagesAdvertForm();
 };
 
 /* Для вывода сообщения, нужно добавить дополнительную разметку для показа сообщения об ошибке в HTML документ */
@@ -196,7 +198,6 @@ const onChangePriceForHousingType = (evt) => {
 
   housingType.querySelector(`[value="${selectedType}"]`).setAttribute('selected', '');
 };
-
 
 /**
  * @description  Заголовок объявления:
@@ -291,14 +292,16 @@ capacity.addEventListener('change', onCapacityChange);
 
 // Изменение времени заезда
 checkInTime.addEventListener('change', onTimeinChange);
+
 // Изменение времени выезда
 checkOutTime.addEventListener('change', onTimeOutChange);
 
 /**
- * @description Подписка на событие формы - Отправить. Валидация формы
+ * @description Подписка на событие формы - Отправить. !!! Основная функция - Валидация формы. Если форма валидна - выполняем какое то действие - в нашем случае отправка данных на сервер
  * @param {Function} onSuccess - Функция открытия сообщения об успешной отправке формы и очистке формы (действия, которые нужно выполнить после успешной отправки формы)
+ * @param {Function} onError - Функция открытия сообщения об НЕуспешной отправке формы
  */
-const setUserFormSubmit = (onSuccess) => {
+const setUserFormSubmit = (onSuccess, onError) => {
   formPlacingAd.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
@@ -308,9 +311,14 @@ const setUserFormSubmit = (onSuccess) => {
       blockSubmitBtn();
       const formData = new FormData(evt.target);
 
+      // Отправка данных на сервер
       sendDataToServer(
         () => {
+          // Если отправка данных прошла успешно, показывается соответствующее сообщение
           onSuccess();
+
+          // возвращение формы в исходное состояние при успешной отправке
+          clearForm();
           unblockSubmitBtn();
         },
         () => {
@@ -320,7 +328,8 @@ const setUserFormSubmit = (onSuccess) => {
         formData
       );
     } else {
-      showErrorMessage();
+      // !!! Если форма не вылидна, показывается соответствующее сообщение
+      onError();
     }
   });
 };
@@ -328,5 +337,5 @@ const setUserFormSubmit = (onSuccess) => {
 // Обработчки на событие reset
 formPlacingAd.addEventListener('reset', onResetData);
 
-export { setUserFormSubmit, clearForm };
+export { setUserFormSubmit };
 
