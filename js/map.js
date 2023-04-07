@@ -2,6 +2,11 @@ import { setActiveStateForm, setActiveStateFilter } from './forms-state.js';
 // import { similarOffers } from './generate-offers.js';
 import { renderSimilarOffers } from './rendering-similar-offers.js';
 import { getDataFromServer } from './server-api.js';
+import { filterOffers } from './filter-data.js';
+import { debounce } from './util.js';
+import { showAlertMessage } from './util.js';
+
+
 /**
  * Блок для добавления карты
  */
@@ -11,6 +16,11 @@ const mapCanvas = document.querySelector('#map-canvas');
  * Поле для ввода адреса (координат)
  */
 const coordinatesField = document.querySelector('#address');
+
+/**
+ * Форма фильтрации жилья
+ */
+const mapFiltersForm = document.querySelector('.map__filters');
 
 /**
  * @description Количество показываемых обьявлений за раз
@@ -43,7 +53,7 @@ const SIMILAR_ICON_SIZE = 42;
 /**
  * Приближение карты
  */
-const MAP_ZOOM = 9;
+const MAP_ZOOM = 12;
 
 /**
  * Создание карты
@@ -147,11 +157,22 @@ const renderMarkers = (similarOffers) => {
   // const partOfSimilarOffers = similarOffers.slice(0, ADVERT_MAX_QUANTITY);
 
   similarOffers
-    .slice()
     .slice(0, ADVERT_MAX_QUANTITY)
     .forEach((offer) => {
       createMarkers(offer);
     });
+};
+
+/**
+ * @description Добавление обработчика на форму фильтрации, очистка слоев карты, вызов функции
+ * @param {function} cb - функция
+ */
+const setMapFilters = (cb) => {
+  mapFiltersForm.addEventListener('change', () => {
+    // Очищаем слой(удаляем маркеры) с карты
+    markerGroup.clearLayers();
+    cb();
+  });
 };
 
 /**
@@ -165,13 +186,17 @@ const loadMap = () => {
       setActiveStateForm();
       setActiveStateFilter();
 
-      // Отрисока меток на карте
-      getDataFromServer(renderMarkers);
+      // Отрисовка меток на карте
+      getDataFromServer((offers) => {
+        setMapFilters(debounce(
+          () => renderMarkers(filterOffers(offers)),
+        ));
+        renderMarkers(offers);
+      });
 
       coordinatesField.value = `${COORDINATES_CENTER_TOKYO.lat}, ${COORDINATES_CENTER_TOKYO.lng}`;
-      console.log(evt.target._loaded)
     } else {
-      console.log('err')
+      showAlertMessage('Карта не загрузилась! Попробуйте обновить страницу');
     }
   })
     .setView({
@@ -216,10 +241,7 @@ const resetMapData = () => {
     lng: COORDINATES_CENTER_TOKYO.lng,
   });
 
-  // coordinatesField.value = `${COORDINATES_CENTER_TOKYO.lat}, ${COORDINATES_CENTER_TOKYO.lng}`;
   coordinatesField.defaultValue = `${COORDINATES_CENTER_TOKYO.lat}, ${COORDINATES_CENTER_TOKYO.lng}`;
-  // console.log(`${COORDINATES_CENTER_TOKYO.lat}, ${COORDINATES_CENTER_TOKYO.lng}`)
-  // console.log(coordinatesField.value)
 
   // Возвращаем карту на первоночальное место
   map.setView({
@@ -229,17 +251,5 @@ const resetMapData = () => {
 
   closeBalloon();
 };
-
-
-/**
- * Форма для добавления обьявления
- */
-// const formPlacingAd = document.querySelector('.ad-form');
-
-// formPlacingAd.addEventListener('reset', onResetData);
-
-
-// Добавление обработчика на кнопку reset у формы
-// adFormReset.addEventListener('click', onResetData);
 
 export { resetMapData, closeBalloon, renderMarkers, loadMap };

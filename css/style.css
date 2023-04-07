@@ -1117,4 +1117,15 @@ textarea {
   overflow: hidden;
 }
 
-
+/* Стили для сообщения об отсутствии похожих обьявлений */
+.no-simmilar-offers {
+  position: fixed;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  background-color: #b6e1d5;
+  border-radius: 10px;
+  padding: 12px;
+  z-index: 5;
+}

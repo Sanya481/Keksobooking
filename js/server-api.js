@@ -9,6 +9,7 @@ import { setActiveStateFilter, setActiveStateForm } from './forms-state.js';
 
 const API_URL = 'https://25.javascript.pages.academy/keksobooking';
 
+
 /**
  * @description Получение данных от сервера
  * @param {Function} onSuccess - Функция при успешном получении данных
@@ -30,12 +31,6 @@ const getDataFromServer = (onSuccess) => {
       setActiveStateFilter();
       setActiveStateForm();
 
-      // document.querySelector('.map__filters').addEventListener('click', (evt) => {
-      // console.log(evt.target)
-      // })
-
-      console.log(data)
-
     })
     .catch(() => {
       // Блокируем фильтрацию, если не загрузились данные с сервера
@@ -56,7 +51,7 @@ const getDataFromServer = (onSuccess) => {
  */
 const sendDataToServer = (onSuccess, onFail, formData) => {
   fetch(
-    'https://25.javascript.pages.academy/keksobooking',
+    API_URL,
     {
       method: 'POST',
       body: formData,
