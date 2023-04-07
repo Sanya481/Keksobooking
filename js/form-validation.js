@@ -22,6 +22,10 @@ import { cleanImagesAdvertForm } from './add-photo-to-form.js';
 const formPlacingAd = document.querySelector('.ad-form');
 
 /**
+ * Форма фильтрации жилья
+ */
+const mapFiltersForm = document.querySelector('.map__filters');
+/**
  * Заголовок объявления
  */
 // const titleField = document.querySelector('#title');
@@ -61,10 +65,14 @@ const checkOutTime = document.querySelector('#timeout');
  */
 const adFormSubmit = document.querySelector('.ad-form__submit');
 
-// Максимальная цена за ночь
+/**
+ * Максимальная цена за ночь
+ */
 const PRICE_MAX_FOR_NIGHT = 100000;
 
-// Для удобства создал прайс лист для типов жилья
+/**
+ * Для удобства создал прайс лист для типов жилья
+ */
 const priceHousingType = {
   bungalow: 0,
   flat: 1000,
@@ -74,7 +82,9 @@ const priceHousingType = {
 };
 
 // Допустимые варианты выбора количества гостей - при выборе количества комнат
-// соотношение количества комнат и гостей
+/**
+ *  соотношение количества комнат и гостей
+ */
 const RATIO_OF_ROOMS_AND_GUESTS = {
   '1': ['1'],
   '2': ['1', '2'],
@@ -116,6 +126,9 @@ const unblockSubmitBtn = () => {
 const clearForm = () => {
   // Для очистки полей формы достаточно дописать в обработчик событий submit этот метод
   formPlacingAd.reset();
+
+  // Очистка формы фильтрации обьявлений
+  mapFiltersForm.reset();
 
   // Возврат карты/основной метки в начальное состояние
   resetMapData();
