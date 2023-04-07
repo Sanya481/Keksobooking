@@ -64,7 +64,7 @@ const map = L.map(mapCanvas);
  * Создание главной метки
  */
 const mainPinIcon = L.icon({
-  iconUrl: '../img/main-pin.svg',
+  iconUrl: './img/main-pin.svg',
   iconSize: [MAIN_PIN_SIZE, MAIN_PIN_SIZE],
   iconAnchor: [MAIN_PIN_SIZE / 2, MAIN_PIN_SIZE],
 });
@@ -116,7 +116,7 @@ mainPinMarker.on('moveend', (evt) => {
 * Создание похожих меток (иконка похожих меток у всех одна и та же)
 */
 const similarIcon = L.icon({
-  iconUrl: '../img/pin.svg',
+  iconUrl: './img/pin.svg',
   iconSize: [SIMILAR_ICON_SIZE, SIMILAR_ICON_SIZE],
   iconAnchor: [SIMILAR_ICON_SIZE / 2, SIMILAR_ICON_SIZE],
 });
