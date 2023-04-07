@@ -252,4 +252,4 @@ const resetMapData = () => {
   closeBalloon();
 };
 
-export { resetMapData, closeBalloon, renderMarkers, loadMap };
+export { resetMapData, closeBalloon, renderMarkers, loadMap, markerGroup };

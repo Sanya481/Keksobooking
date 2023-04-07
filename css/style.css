@@ -1131,6 +1131,6 @@ textarea {
 }
 
 /* Стилизация ошибки при неправильном заполнении поля */
-.pristine-error error-text {
+.pristine-error.error-text {
   color: red;
 }

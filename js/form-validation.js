@@ -4,6 +4,10 @@ import { showAlertMessage } from './util.js';
 import { sendDataToServer } from './server-api.js';
 import { cleanImagesAdvertForm } from './add-photo-to-form.js';
 
+// Если нужно, чтобы после отправки сбрасывались отфильтрованные обьявления на карте
+import { markerGroup, renderMarkers } from './map.js';
+import { getDataFromServer } from './server-api.js';
+
 // https://morioh.com/p/7c5a96c13053 - подсказки ниже взял с этого сайта
 
 /* !При добавлении библиотеки Pristine, к форме, которую мы собираемся валидировать, добавляется атрибут novalidate со значением true; это отключит проверку HTML формы по умолчанию */
@@ -121,7 +125,7 @@ const unblockSubmitBtn = () => {
 };
 
 /**
- * @description Очистка формы (удаление данных введенных пользователем )
+ * @description Очистка формы (удаление данных введенных пользователем ) при успешном размещении обьяыления
  */
 const clearForm = () => {
   // Для очистки полей формы достаточно дописать в обработчик событий submit этот метод
@@ -141,6 +145,12 @@ const clearForm = () => {
 
   // Удаление изображений с формы
   cleanImagesAdvertForm();
+
+  // Если нужно, чтобы после отправки сбрасывались отфильтрованные обьявления на карте
+  markerGroup.clearLayers();
+  getDataFromServer((offers) => {
+    renderMarkers(offers);
+  });
 };
 
 /* Для вывода сообщения, нужно добавить дополнительную разметку для показа сообщения об ошибке в HTML документ */

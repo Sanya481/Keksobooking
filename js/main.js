@@ -3,7 +3,7 @@
 import './form-validation.js';
 import './map.js';
 import './price-slider.js';
-import './ad-form-message.js';
+import './ad-form-success-message.js';
 import './ad-form-error-message.js';
 import './server-api.js';
 import './filter-data.js';
@@ -12,7 +12,7 @@ import { setInactiveStateFilter, setInactiveStateForm } from './forms-state.js';
 // import { getDataFromServer } from './server-api.js';
 import { loadMap } from './map.js';
 import { setUserFormSubmit } from './form-validation.js';
-import { showSuccessMessage } from './ad-form-message.js';
+import { showSuccessMessage } from './ad-form-success-message.js';
 import { showErrorMessage } from './ad-form-error-message.js';
 
 // Интерфейс
