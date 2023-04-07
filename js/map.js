@@ -1,6 +1,11 @@
 import { setActiveStateForm, setActiveStateFilter } from './forms-state.js';
 // import { similarOffers } from './generate-offers.js';
 import { renderSimilarOffers } from './rendering-similar-offers.js';
+import { getDataFromServer } from './server-api.js';
+import { filterOffers } from './filter-data.js';
+import { debounce } from './util.js';
+import { showAlertMessage } from './util.js';
+
 
 /**
  * Блок для добавления карты
@@ -13,51 +18,64 @@ const mapCanvas = document.querySelector('#map-canvas');
 const coordinatesField = document.querySelector('#address');
 
 /**
+ * Форма фильтрации жилья
+ */
+const mapFiltersForm = document.querySelector('.map__filters');
+
+/**
+ * @description Количество показываемых обьявлений за раз
+ */
+const ADVERT_MAX_QUANTITY = 10;
+
+/**
  * Кнопка - очистить форму
  */
 // const adFormReset = document.querySelector('.ad-form__reset');
 
-// Координаты центра Токио
+/**
+ * Координаты центра Токио
+ */
 const COORDINATES_CENTER_TOKYO = {
   lat: 35.68948,
   lng: 139.69170,
 };
 
-// Приближение карты
-const MAP_ZOOM = 9;
+/**
+ * Размер основной метки (высота и ширина одинаковы)
+ */
+const MAIN_PIN_SIZE = 52;
 
-const map = L.map(mapCanvas)
-  .on('load', () => {
+/**
+ * Размер похожих меток (высота и ширина одинаковы)
+ */
+const SIMILAR_ICON_SIZE = 42;
 
-    setActiveStateForm();
-    setActiveStateFilter();
+/**
+ * Приближение карты
+ */
+const MAP_ZOOM = 12;
 
-    coordinatesField.value = `${COORDINATES_CENTER_TOKYO.lat}, ${COORDINATES_CENTER_TOKYO.lng}`;
-    // console.log(evt.target._loaded)
-  })
-  .setView({
-    lat: COORDINATES_CENTER_TOKYO.lat,
-    lng: COORDINATES_CENTER_TOKYO.lng,
-  }, MAP_ZOOM);
+/**
+ * Создание карты
+ */
+const map = L.map(mapCanvas);
 
-L.tileLayer(
-  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  },
-).addTo(map);
-
-
+/**
+ * Создание главной метки
+ */
 const mainPinIcon = L.icon({
   iconUrl: '../img/main-pin.svg',
-  iconSize: [52, 52],
-  iconAnchor: [26, 52],
+  iconSize: [MAIN_PIN_SIZE, MAIN_PIN_SIZE],
+  iconAnchor: [MAIN_PIN_SIZE / 2, MAIN_PIN_SIZE],
 });
 
+/**
+ * Создание главной метки (расположение и опции)
+ */
 const mainPinMarker = L.marker(
   {
-    lat: 35.68948,
-    lng: 139.69170,
+    lat: COORDINATES_CENTER_TOKYO.lat,
+    lng: COORDINATES_CENTER_TOKYO.lng,
   },
   {
     draggable: true,
@@ -65,6 +83,7 @@ const mainPinMarker = L.marker(
   },
 );
 
+// Добавление главной метки на карту
 mainPinMarker.addTo(map);
 
 // https://learn.javascript.ru/number
@@ -93,11 +112,13 @@ mainPinMarker.on('moveend', (evt) => {
   // coordinatesField.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 });
 
-// Создание похожих меток (иконка похожих меток у всех одна и та же)
+/**
+* Создание похожих меток (иконка похожих меток у всех одна и та же)
+*/
 const similarIcon = L.icon({
   iconUrl: '../img/pin.svg',
-  iconSize: [42, 42],
-  iconAnchor: [21, 42],
+  iconSize: [SIMILAR_ICON_SIZE, SIMILAR_ICON_SIZE],
+  iconAnchor: [SIMILAR_ICON_SIZE / 2, SIMILAR_ICON_SIZE],
 });
 
 // Создание 'слоя' и его добавление на карту
@@ -123,10 +144,75 @@ const createMarkers = (advertisement) => {
     .bindPopup(renderSimilarOffers(advertisement));
 };
 
-// advert - одно обьявление
-// similarOffers.forEach((advert) => {
-//   createMarkers(advert);
-// });
+
+/* ! Метод slice возвращает новый массив, в который копирует все элементы с индекса start до end (не включая end). */
+
+/**
+ * @description Отрисовка меток и их попапов(балунов) на карте
+ * @param {Array} similarOffers - массив получаемых данных с сервера
+ */
+const renderMarkers = (similarOffers) => {
+  // Можно подробно расписать
+  // const copySimilarOffers = similarOffers.slice();
+  // const partOfSimilarOffers = similarOffers.slice(0, ADVERT_MAX_QUANTITY);
+
+  similarOffers
+    .slice(0, ADVERT_MAX_QUANTITY)
+    .forEach((offer) => {
+      createMarkers(offer);
+    });
+};
+
+/**
+ * @description Добавление обработчика на форму фильтрации, очистка слоев карты, вызов функции
+ * @param {function} cb - функция
+ */
+const setMapFilters = (cb) => {
+  mapFiltersForm.addEventListener('change', () => {
+    // Очищаем слой(удаляем маркеры) с карты
+    markerGroup.clearLayers();
+    cb();
+  });
+};
+
+/**
+ * Загрузка карты на странице
+ */
+const loadMap = () => {
+  map.on('load', (evt) => {
+    if (evt.target._loaded) {
+
+      // Активируем формы
+      setActiveStateForm();
+      setActiveStateFilter();
+
+      // Отрисовка меток на карте
+      getDataFromServer((offers) => {
+        setMapFilters(debounce(
+          () => renderMarkers(filterOffers(offers)),
+        ));
+        renderMarkers(offers);
+      });
+
+      coordinatesField.value = `${COORDINATES_CENTER_TOKYO.lat}, ${COORDINATES_CENTER_TOKYO.lng}`;
+    } else {
+      showAlertMessage('Карта не загрузилась! Попробуйте обновить страницу');
+    }
+  })
+    .setView({
+      lat: COORDINATES_CENTER_TOKYO.lat,
+      lng: COORDINATES_CENTER_TOKYO.lng,
+    }, MAP_ZOOM);
+};
+
+// Создание и добавление 'картинки' карты (улицы, дома.....)
+L.tileLayer(
+  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  },
+).addTo(map);
+
 
 /**
  * @description Закрытие описания балуна (при очистке и отправке формы), если оно открыто
@@ -155,10 +241,7 @@ const resetMapData = () => {
     lng: COORDINATES_CENTER_TOKYO.lng,
   });
 
-  // coordinatesField.value = `${COORDINATES_CENTER_TOKYO.lat}, ${COORDINATES_CENTER_TOKYO.lng}`;
   coordinatesField.defaultValue = `${COORDINATES_CENTER_TOKYO.lat}, ${COORDINATES_CENTER_TOKYO.lng}`;
-  // console.log(`${COORDINATES_CENTER_TOKYO.lat}, ${COORDINATES_CENTER_TOKYO.lng}`)
-  // console.log(coordinatesField.value)
 
   // Возвращаем карту на первоночальное место
   map.setView({
@@ -169,16 +252,4 @@ const resetMapData = () => {
   closeBalloon();
 };
 
-
-/**
- * Форма для добавления обьявления
- */
-// const formPlacingAd = document.querySelector('.ad-form');
-
-// formPlacingAd.addEventListener('reset', onResetData);
-
-
-// Добавление обработчика на кнопку reset у формы
-// adFormReset.addEventListener('click', onResetData);
-
-export { resetMapData, closeBalloon , createMarkers};
+export { resetMapData, closeBalloon, renderMarkers, loadMap };

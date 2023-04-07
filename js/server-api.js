@@ -1,4 +1,6 @@
 import { showAlertMessage } from './util.js';
+import { setInactiveStateFilter } from './forms-state.js';
+import { setActiveStateFilter, setActiveStateForm } from './forms-state.js';
 
 // JSON -JavaScript object notation
 // Преобразование JavaScript => JSON - Сериализация
@@ -6,6 +8,7 @@ import { showAlertMessage } from './util.js';
 // fetch - это функция
 
 const API_URL = 'https://25.javascript.pages.academy/keksobooking';
+
 
 /**
  * @description Получение данных от сервера
@@ -22,14 +25,21 @@ const getDataFromServer = (onSuccess) => {
       throw new Error(`${response.status} ${response.statusText}`);
     })
     .then((data) => {
-      const offers = data;
+      onSuccess(data);
 
-      offers.forEach((offer) => {
-        onSuccess(offer);
-      });
+      //  Загрузка и успешная инициализация карты переводит страницу в активное состояние
+      setActiveStateFilter();
+      setActiveStateForm();
+
     })
     .catch(() => {
+      // Блокируем фильтрацию, если не загрузились данные с сервера
+      setInactiveStateFilter();
+      // Показываем сообщение
       showAlertMessage('Не удалось загрузить данные с сервера');
+
+      /*  ошибка загрузки данных влияет на отображение меток и их фильтрацию, но не влияет на отправку формы. Даже если данные для меток не загрузились, возможность выбрать адрес на карте и отправить форму сохраняется. */
+      setActiveStateForm();
     });
 };
 
@@ -49,6 +59,7 @@ const sendDataToServer = (onSuccess, onFail, formData) => {
   )
     .then((response) => {
       if (response.ok) {
+        // возвращение формы в исходное состояние при успешной отправке
         onSuccess();
       } else {
         onFail('Не удалось отправить форму! Попробуйте пожалуйста ещё раз.');

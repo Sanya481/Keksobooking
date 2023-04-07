@@ -109,5 +109,4 @@ const setActiveStateFilter = () => { activeState(mapFilterForm); };
 
 // !Заблокировался ли слайдер?
 
-
 export { setInactiveStateForm, setActiveStateForm, setInactiveStateFilter, setActiveStateFilter };

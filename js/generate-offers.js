@@ -16,12 +16,12 @@ const GUESTS_MIN_COUNT = 1;
 const GUESTS_MAX_COUNT = 20;
 
 // Местоположение в виде географических координат - широта
-const ADRESS_MIN_LATITUDE = 35.6;
-const ADRESS_MAX_LATITUDE = 35.7;
+const ADRESS_MIN_LATITUDE = 35;
+const ADRESS_MAX_LATITUDE = 38;
 
 // Местоположение в виде географических координат - долгота
-const ADDRESS_MIN_LONGITUDE = 138.65;
-const ADDRESS_MAX_LONGITUDE = 139.79;
+const ADDRESS_MIN_LONGITUDE = 135;
+const ADDRESS_MAX_LONGITUDE = 141;
 
 // Количество знаков после плавающей точки у числа
 const DECIMAL_PLACES_COUNT = 5;
